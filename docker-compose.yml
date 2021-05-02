@@ -1,0 +1,70 @@
+version: "3.6"
+
+####################
+# Services
+#-------------------
+# One section per container to start
+####################
+services:
+  postgresql:
+    image: postgres             # image to start for container (images are available on hub.docker.com)
+    restart: unless-stopped     # no, always, unless-stopped, on-failure: restart mode. Set to unless-stopped or always for automatic start at boot
+    environment:                # define environment variables
+      - POSTGRES_USER=redmine
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - PGDATA=/var/lib/postgresql/data
+    volumes:            # volumes mapping
+      - db:/var/lib/postgresql/data
+    networks:           # networks to attach
+     - redmine-net
+    secrets:            # secrets are mapped to file /run/secrets/<secret_name>
+      - db_password
+
+  redmine:
+    image: redmine
+    restart: unless-stopped
+    environment:
+      - REDMINE_DB_POSTGRES=postgresql
+      - REDMINE_DB_USERNAME=redmine
+      - REDMINE_DB_PASSWORD_FILE=/run/secrets/db_password
+    ports:              # port mapping
+      - "3000:3000"
+    depends_on:         # container dependencies. Containers start according to dependency
+      - postgresql
+    volumes:
+      - data:/usr/src/redmine/files
+    networks:
+     - redmine-net
+    secrets:
+      - db_password
+
+##################
+# Volumes
+#-----------------
+# Define all volumes to create or to attach
+# Add property 'external: true' if volume already existing.
+# Otherwise, volume is created
+##################
+volumes:
+  db:
+  data:
+
+##################
+# Networks
+#-----------------
+# Define available networks to which container will attach.
+##################
+networks:
+  redmine-net:
+
+##################
+# Secrets
+#-----------------
+# Define secrets without needing to write them in clear
+# inside YAML file. Secrets are either defined in a file or 
+# already existing (external: true).
+##################
+secrets:
+  db_password:
+    file: ./dbpassword
+
