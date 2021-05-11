@@ -33,10 +33,22 @@ services:
       - postgresql
     volumes:
       - data:/usr/src/redmine/files
+      - repos:/usr/repos
     networks:
      - redmine-net
     secrets:
       - db_password
+
+  repositories:
+    image: redmine-repos
+    restart: unless-stopped
+    networks:
+      - redmine-net
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    volumes:
+      - repos:/usr/repos
+
 
 ##################
 # Volumes
@@ -48,6 +60,7 @@ services:
 volumes:
   db:
   data:
+  repos:
 
 ##################
 # Networks

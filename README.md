@@ -2,23 +2,32 @@
 ## Intro
 Redmine server instance on a docker container running on RaspberryPi 4.
 ## Design
-* 2 containers
+* 3 containers
   * Redmine
   * Postgresql database
+  * Git repositories storage
 * 1 network
-* 2 volumes
+* 3 volumes
   * `db` volume to persist database
   * `data` volume to persist files uploaded to redmine
+  * `repos` volume to persist Git repositories
 * 1 secret file for DB password
 
 ## Installation
-* Pull repository to get `docker-compose.yml` file
+* Pull repository to get `docker-compose.yml` file and docker images
+* Build required images: `alpine-git` and then `redmine-repos`
 * Set password in file `dbpassword`
 * Run command `sudo systemctl enable docker` to allow automatic start at Rpi boot
 
 ## Run Redmine
 Go into directory containing `docker-compose.yml` file and execute following command
 ```docker-compose up -d```
+
+### First usage
+The first time you run Redmine, you need to init repositories first.
+* Attach to repositories container to clone
+* Go into folder /usr/repos
+* Clone all required repositories (ensure to use `--bare` option)
 
 ## Access Remine
 * From any browser having access to the Raspberry, browse to  URL `<raspberry-address>:3000`

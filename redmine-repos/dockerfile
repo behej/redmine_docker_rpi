@@ -1,0 +1,5 @@
+FROM alpine-git
+COPY fetch_repos.sh /etc/periodic/hourly/
+RUN chmod +x /etc/periodic/hourly/fetch_repos.sh
+RUN echo "0 * * * * /etc/periodic/hourly/fetch_repos.sh" > /etc/crontabs/root
+CMD [ "/usr/sbin/crond", "-f"]
