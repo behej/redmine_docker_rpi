@@ -25,9 +25,12 @@ Go into directory containing `docker-compose.yml` file and execute following com
 
 ### First usage
 The first time you run Redmine, you need to init repositories first.
-* Attach to repositories container to clone
+* Attach to repositories container to clone:
+  * Simply attaching to container is not sufficient since container doesn't run shell command. Most suitable option is to execute a shell command to it with interractive option with binding to TTY
+  * `docker container exec -it <nom_container> sh`
 * Go into folder /usr/repos
-* Clone all required repositories (ensure to use `--bare` option)
+* Clone all required repositories (ensure to use `--mirror` option)
+  * `git clone --mirror <url>`
 
 ## Access Remine
 * From any browser having access to the Raspberry, browse to  URL `<raspberry-address>:3000`
